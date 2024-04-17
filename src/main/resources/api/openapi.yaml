@@ -1,0 +1,350 @@
+openapi: 3.0.3
+info:
+  title: Railway Management API
+  description: >
+    'This is a **Railway Management API**.  This is an assignment for SDE Role at Anakin.'
+  version: 1.0.0
+externalDocs:
+  description: The Problem statement of the API.
+  url: https://bit.ly/Testb
+servers:
+  - url: https://ecommerce.swagger.io/v2
+tags:
+  - name: user
+    description: operations about users
+    externalDocs:
+      description: Find out more 
+      url: http://swagger.io
+  - name: train
+    description: Operation about trains
+  - name: booking
+    description: Operations about bookings
+
+paths:
+  
+  /api/v1/bookings:
+    post:
+      tags:
+        - booking
+      summary:  Creates a new booking for the given booking request
+      description: Creates a new booking for the given booking request.
+      operationId: addBooking
+      requestBody:
+        description: New Booking Request object
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/NewBooking'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBooking'
+      responses:
+        201:
+          description: Booking added successfully
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        406:
+          description: If payment is not authorized.
+          content: {}
+    get:
+      tags:
+        - booking
+      summary: Returns the bookings of given user
+      description: Returns bookings of given user
+      operationId: getBookingsByUserId
+      parameters:
+        - name: userId
+          in: query
+          description: User Identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: If booking exists.
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        404:
+          description: Booking doesn't exist for given user.
+          content: {}
+  /api/v1/bookings/{id}:
+    get:
+      tags:
+        - booking
+      summary: Returns the booking of given booking ID
+      description: Returns bookings of given booking ID
+      operationId: getBookingsByBookingId
+      parameters:
+        - name: id
+          in: path
+          description: Booking Identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: If booking exists.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Booking'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        404:
+          description: Booking doesn't exist for given id.
+          content: {}
+  /api/v1/users:
+    get:
+      tags:
+        - user
+      summary: Returns all users
+      description: Returns all users, or empty collection if no use found
+      operationId: getAllUsers
+      responses:
+        200:
+          description: For successful fetch.
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+    post:
+      tags:
+        - user
+      summary: Adds a user
+      description: Adds a user.
+      operationId: addUser
+      requestBody:
+        description: User object to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: For successful fetch.
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  
+   
+  /api/v1/trains:
+    get:
+      tags:
+        - train
+      summary: Returns all the matched trains
+      description: Returns the triains that matches the given query criteria
+      operationId: queryTrains
+      parameters:
+        - name: source
+          in: query
+          description: Train source
+          required: true
+          schema:
+            type: string
+        - name: destination
+          in: query
+          description: Train destination
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Query page number
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: size
+          in: query
+          description: Query page size
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        200:
+          description: For successful fetch.
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Train'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Train'
+
+    post:
+      tags:
+        - train
+      summary: Adds a Train
+      description: Adds the train
+      operationId: addTrain
+      requestBody:
+        description: Train object to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Train'
+      responses:
+        200:
+          description: Successful
+        
+
+  /api/v1/trains/{id}:
+    get:
+      tags:
+        - train
+      summary: Returns a train
+      description: Returns the train that matches the given train ID
+      operationId: getTrain
+      parameters:
+        - name: id
+          in: path
+          description: Train Identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: For successful fetch.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Train'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Train'
+
+    
+components:
+  schemas:
+    Booking:
+      description: Represents a booking
+      type: object
+      properties:
+        id:
+          description: Booking identifier
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        train:
+          $ref: '#/components/schemas/Train'
+        date:
+          description: Booking's data and time details
+          type: string
+          format: date-time
+        seats:
+          description: Number of seats booked.
+          type: integer
+          format: int32
+        status:
+          description: Booking Status
+          type: string
+          enum:
+            - FAILED
+            - COMPLETED
+      xml:
+        name: Booking
+    
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        userStatus:
+          type: integer
+          description: User Status
+          format: int32
+      xml:
+        name: User
+    NewBooking:
+      description: Contains the new booking request information
+      type: object
+      properties:
+        train:
+          #description: URI that should be used to fetch the train
+          $ref: '#/components/schemas/URI'
+      xml:
+        name: NewBooking
+    URI:
+      type: object
+      xml:
+        name: URI
+    
+    Train:
+      description: Train information
+      type: object
+      properties:
+        id:
+          description: Train identifier
+          type: string
+        name:
+          description: Train Name
+          type: string
+        source:
+          description: Train's source
+          type: string
+        destination:
+          description: Train's destination
+          type: string
+        seats:
+          description: Number of seats available
+          type: integer
+          format: int32
+        
