@@ -1,3 +1,3 @@
-Please go to the master branch.
+Documention : Go to dynamic-html-documentation-generated folder.
 
-Documentation : https://app.swaggerhub.com/apis/TANUU1423/railway-management_api/1.0.0#/NewBooking
+Go to https://app.swaggerhub.com/ or https://editor.swagger.io/ and copy & paste .yaml file for api endpoints.
